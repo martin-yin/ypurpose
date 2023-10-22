@@ -1,0 +1,35 @@
+{
+  "name": "ypurpose",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "watch": "tsup --watch",
+    "build": "tsup"
+  },
+  "bin": {
+    "ypurpose": "bin/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colorette": "^2.0.20",
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
+    "unconfig": "^0.3.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "prettier": "^3.0.3"
+  }
+}
