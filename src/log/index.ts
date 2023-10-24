@@ -1,3 +1,4 @@
+import util from 'util';
 import * as colors from 'colorette';
 
 type LOG_TYPE = 'info' | 'success' | 'error' | 'warn';
@@ -6,7 +7,6 @@ export const colorize = (type: LOG_TYPE, data: any, onlyImportant = false) => {
   if (onlyImportant && (type === 'info' || type === 'success')) return data;
 
   const color = type === 'info' ? 'blue' : type === 'error' ? 'red' : type === 'warn' ? 'yellow' : 'green';
-
   return colors[color](data);
 };
 
@@ -15,6 +15,16 @@ export const makeLabel = (name: string | undefined, input: string, type: LOG_TYP
     .filter(Boolean)
     .join(' ');
 };
+
+let silent = false;
+
+export function setSilent(isSilent?: boolean) {
+  silent = !!isSilent;
+}
+
+export function getSilent() {
+  return silent;
+}
 
 export type Logger = ReturnType<typeof createLogger>;
 
@@ -42,12 +52,14 @@ export const createLogger = (name?: string) => {
 
     log(label: string, type: 'info' | 'success' | 'error' | 'warn', ...data: unknown[]) {
       const args = [makeLabel(name, label, type), ...data.map(item => colorize(type, item, true))];
-
-      if (type === 'error') {
-        return console.error(...args);
+      switch (type) {
+        case 'error': {
+          console.error(...args);
+          process.exit(1);
+        }
+        default:
+          console.log(...args);
       }
-
-      console.log(...args);
     }
   };
 };

@@ -26,7 +26,6 @@ export class PluginContainer {
         if (typeof plugin.options === 'function') {
           options = await plugin.options.call(this.getContext());
         }
-        // options = plugin.options;
       }
       if (plugin.start) {
         await plugin.start.call(this.getContext(), options);

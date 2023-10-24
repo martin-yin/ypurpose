@@ -29,7 +29,8 @@ cli
       });
 
       if (!localConfig) {
-        throw Error('没有找到配置文件！');
+        logger.error('CLI', `当前目录下没有找到 ${name} 配置文件`);
+        return;
       }
 
       const pluginContainer = new PluginContainer([...localConfig.plugins]);
@@ -46,6 +47,9 @@ cli
         await pluginContainer.start();
       } catch (e) {
         logger.error('CLI', e);
+        return;
       }
     }
   );
+
+cli.parse();
