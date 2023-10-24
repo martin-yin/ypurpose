@@ -12,15 +12,15 @@ cli.help();
 cli.version(VERSION);
 
 cli
-  .command('start [...command]', '')
+  .command('start <command>', '')
   .option('-c, --config', '读取当前目录下的配置代码')
   .action(
     async (
+      command: string,
       options: {
         c: string;
         config: string;
-      },
-      command: string
+      }
     ) => {
       const cwd = process.cwd();
       const logger = createLogger();

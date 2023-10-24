@@ -3,16 +3,7 @@ import path from 'node:path';
 
 import { createConfigLoader as createLoader } from 'unconfig';
 import { Logger } from '../log';
-
-export type ConfigType = {
-  options: any;
-  command?: string;
-  plugins: Array<any>;
-  onSuccess?: () => void;
-  onFail?: (e: Error) => void;
-};
-
-export type ConfigTypeArray = Array<ConfigType & { command: string }>;
+import { ConfigType, ConfigTypeArray, LocalConfigArr } from '../types';
 
 /**
  * @description 定义配置
@@ -60,12 +51,14 @@ export async function getLocalConfig(
 ): Promise<ConfigType | null> {
   const localConfig = await loadConfig(options);
   const keys = Object.keys(localConfig);
+
   if (keys[0] === '0' && command !== '') {
     let commandConfig = null;
-    keys.forEach(key => {
-      const localConfigArr = localConfig as unknown as any;
-      const config = localConfigArr[key] as unknown as ConfigType;
 
+    keys.forEach(key => {
+      const localConfigArr = localConfig as unknown as LocalConfigArr;
+      const config = localConfigArr[key] as ConfigType;
+      console.log(config.command, command, '????');
       if (config.command === command) {
         commandConfig = config;
       }
@@ -74,6 +67,7 @@ export async function getLocalConfig(
     if (!commandConfig) {
       logger.error('CLI', 'command 不正确！');
     }
+
     return commandConfig;
   }
 
