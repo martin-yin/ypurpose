@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { createConfigLoader as createLoader } from 'unconfig';
+import { Logger } from '../log';
 
 export type ConfigType = {
   options: any;
@@ -54,22 +55,26 @@ export async function loadConfig(options: { cwd: string; configPath?: string }):
  */
 export async function getLocalConfig(
   command = '',
-  options: { cwd: string; configPath?: string }
+  options: { cwd: string; configPath?: string },
+  logger: Logger
 ): Promise<ConfigType | null> {
   const localConfig = await loadConfig(options);
+  const keys = Object.keys(localConfig);
+  if (keys[0] === '0' && command !== '') {
+    let commandConfig = null;
+    keys.forEach(key => {
+      const localConfigArr = localConfig as unknown as any;
+      const config = localConfigArr[key] as unknown as ConfigType;
 
-  // 如果接收到的配置项是个数组
-  if (Array.isArray(localConfig)) {
-    if (command !== '') {
-      const commandConfig = localConfig.find(config => {
-        config.command === command;
-      });
-
-      if (!commandConfig) {
-        throw Error(`请检查 ${command} 是否有误`);
+      if (config.command === command) {
+        commandConfig = config;
       }
-      return commandConfig;
+    });
+
+    if (!commandConfig) {
+      logger.error('CLI', 'command 不正确！');
     }
+    return commandConfig;
   }
 
   return localConfig as ConfigType;
