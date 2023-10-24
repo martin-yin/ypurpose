@@ -1,5 +1,4 @@
 import cac from 'cac';
-import { Console } from 'console';
 import { version, name } from '../package.json';
 import { getLocalConfig } from './config';
 import { createLogger } from './log';
@@ -43,17 +42,16 @@ cli
 
       logger.info('CLI', `初始化 Plugins`);
 
-      const pluginContainer = new PluginContainer([...localConfig.plugins]);
-
-      pluginContainer.setContext({
-        logger,
-        contextOptions: {
-          cwd,
-          ...localConfig.options
-        }
-      });
-
       try {
+        const pluginContainer = new PluginContainer([...localConfig.plugins]);
+        pluginContainer.setContext({
+          logger,
+          contextOptions: {
+            cwd,
+            ...localConfig.options
+          }
+        });
+
         await pluginContainer.start();
       } catch (e) {
         logger.error('CLI', e);

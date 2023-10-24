@@ -1,1 +1,1 @@
-export * from './git-fetch';
+export * from './git-fetch-pull';
