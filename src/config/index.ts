@@ -58,7 +58,7 @@ export async function getLocalConfig(
     keys.forEach(key => {
       const localConfigArr = localConfig as unknown as LocalConfigArr;
       const config = localConfigArr[key] as ConfigType;
-      console.log(config.command, command, '????');
+
       if (config.command === command) {
         commandConfig = config;
       }
