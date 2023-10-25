@@ -2,7 +2,7 @@ import cac from 'cac';
 import { version, name } from '../package.json';
 import { getLocalConfig } from './config';
 import { createLogger } from './log';
-import { PluginContainer } from './plugin';
+import { PluginContainer } from './pluginContainer';
 
 const VERSION = version as string;
 const cli = cac(name);
