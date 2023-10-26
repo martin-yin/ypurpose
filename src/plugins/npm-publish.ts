@@ -44,7 +44,7 @@ export const npmPublish = (
         const serverVersion = execSync(
           `cd ${cwd} && npm view ${packageJson.name}@${environments === 'stable' ? 'latest' : 'beta'} version`
         ).toString();
-    
+
         let publishVersion = changeVersionByType(serverVersion, versionType);
 
         if (environments && ['beta', 'stable'].includes(environments)) {
@@ -62,8 +62,9 @@ export const npmPublish = (
 
         logger.info(pluginName, `正在发布 ${colors.green(packageJson.name)} 版本号： ${colors.green(publishVersion)}`);
         execSync(`npm version ${publishVersion}`);
-        // execSync('npm publish');
 
+        const publishShell = environments ? `npm publish --tag ${environments}` : `npm publish`;
+        execSync(publishShell);
         logger.success(pluginName, `当前分布分支 ${colors.green(gitBranch)}, 是否成功请查看以上日志！`);
       } catch (e) {
         logger.error(pluginName, `发布失败，请检查日志!`);
