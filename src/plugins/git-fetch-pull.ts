@@ -23,17 +23,25 @@ export const gitFetchPull = ({ pluginName } = { pluginName: 'GITFETCHPULL' }): P
 
         logger.info(pluginName, '正在拉取最新的仓库数据');
 
-        spawnSync('git', ['fetch'], {
+        const fetchResult = spawnSync('git', ['fetch'], {
           cwd: contextOptions.cwd,
           stdio: 'inherit'
         });
+
+        if (fetchResult.status !== 0) {
+          logger.error(pluginName, '拉取最新的仓库数据失败');
+        }
 
         logger.info(pluginName, '正在拉取当前分支最新的代码');
 
-        spawnSync('git', ['pull'], {
+        const pullResult = spawnSync('git', ['pull'], {
           cwd: contextOptions.cwd,
           stdio: 'inherit'
         });
+
+        if (pullResult.status !== 0) {
+          logger.error(pluginName, '拉取当前分支最新的代码失败');
+        }
 
         logger.success(pluginName, '分支代码拉取完成');
       } catch (e) {
