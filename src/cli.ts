@@ -3,6 +3,7 @@ import { version, name } from '../package.json';
 import { getLocalConfig } from './config';
 import { createLogger } from './log';
 import { PluginContainer } from './pluginContainer';
+import { spawnSync } from 'node:child_process';
 
 const VERSION = version as string;
 const cli = cac(name);
@@ -11,13 +12,12 @@ cli.help();
 cli.version(VERSION);
 
 cli
-  .command('start <command>', '')
-  .option('-c, --config', '读取当前目录下的配置代码')
+  .command('start <command>', '执行命令')
+  .option('-c, --config <config>', '读取当前目录下的配置代码')
   .action(
     async (
       command: string,
       options: {
-        c: string;
         config: string;
       }
     ) => {
@@ -30,7 +30,7 @@ cli
         command,
         {
           cwd,
-          configPath: options.c || options.config
+          configPath: options?.config
         },
         logger
       );
@@ -60,4 +60,22 @@ cli
     }
   );
 
+cli
+  .command('build-config', '构建配置文件')
+  .option('-f, --fileName <fileName>', '需要被构建的文件')
+  .option('-d, --dir <dir>', '输出文件位置')
+  .action(async (options: { dir: string; fileName: string }) => {
+    const cwd = process.cwd();
+    const logger = createLogger();
+    const configFile = options.fileName ? options.fileName : 'ypurpose.config.js';
+    const outDir = options?.dir ? options.dir : 'ypurpose-build';
+    const command = 'npx';
+    const args = ['tsup', configFile, '--format', 'cjs', '--outDir', outDir];
+
+    logger.info('CLI', '正在执行构建...');
+    spawnSync(command, args, {
+      cwd,
+      stdio: 'inherit'
+    });
+  });
 cli.parse();
